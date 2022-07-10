@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 
 const AddTask = ({ onAdd }) => {
   const [text, setText] = useState('');
-  const [day, setDay] = useState('');
   const [reminder, setReminder] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -12,12 +14,19 @@ const AddTask = ({ onAdd }) => {
       alert('Please add a task.');
       return;
     }
-
+    const day = startDate.toLocaleDateString('en-us', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     onAdd({ text, day, reminder });
 
     setText('');
-    setDay('');
     setReminder(false);
+    setStartDate(new Date());
   };
 
   return (
@@ -33,12 +42,20 @@ const AddTask = ({ onAdd }) => {
       </div>
       <div className="form-control">
         <label>Day & Time</label>
-        <input
+        <DatePicker
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          isClearable
+          showTimeSelect
+          placeholderText="Add Day & Time"
+          dateFormat="MMMM d, yyyy h:mm aa"
+        />
+        {/* <input
           type="text"
           placeholder="Add Day & Time"
           value={day}
           onChange={(e) => setDay(e.target.value)}
-        />
+        /> */}
       </div>
       <div className="form-control form-control-check">
         <label>Set Reminder</label>
