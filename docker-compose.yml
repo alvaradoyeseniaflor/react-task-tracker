@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  task-tracker:
+    container_name: task-tracker
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=task-tracker-db
+      - CHOKIDAR_USEPOLLING=true
+
+  task-tracker-db:
+    container_name: task-tracker-db
+    image: task-tracker-db
+    build: ./db
+    volumes:
+      - ./db/db.json:/data/db.json
+    ports:
+      - "4000:4000"
+    command: json-server --watch /data/db.json --host 0.0.0.0 --port 4000
